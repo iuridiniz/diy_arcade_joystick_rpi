@@ -1,0 +1,22 @@
+ifneq (${KERNELRELEASE},)
+	obj-m  = diy_arcade_joystick_rpi.o
+else
+	KERNEL_DIR ?= ~/Sources/rpi-linux-source
+	ARCH ?= arm
+	CROSS_COMPILE ?= arm-linux-gnueabihf-
+	MODULE_DIR := $(shell pwd)
+
+.PHONY: all
+
+all: modules
+
+.PHONY: modules
+
+modules:
+	${MAKE} -C ${KERNEL_DIR} CROSS_COMPILE=$(CROSS_COMPILE) ARCH=$(ARCH) SUBDIRS=${MODULE_DIR} modules
+
+clean:
+	rm -f *.o *.ko *.mod.c .*.o .*.ko .*.mod.c .*.cmd *~
+	rm -f Module.symvers Module.markers modules.order
+	rm -rf .tmp_versions .cache.mk
+endif
